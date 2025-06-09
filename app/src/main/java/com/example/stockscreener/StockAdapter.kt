@@ -4,12 +4,15 @@ import android.content.ClipData.Item
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class StockAdapter(private val stockList: List<Stock>) : RecyclerView.Adapter<StockAdapter.ViewHolder>() {
+class StockAdapter(private val stockList: List<Stock>,
+                   private val onItemClick: (Stock) -> Unit
+) : RecyclerView.Adapter<StockAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StockAdapter.ViewHolder {
         val card_design = LayoutInflater.from(parent.context).inflate(R.layout.stock_card_design, parent, false)
@@ -23,6 +26,10 @@ class StockAdapter(private val stockList: List<Stock>) : RecyclerView.Adapter<St
         Glide.with(context).load(item.logo_url).placeholder(R.drawable.ic_launcher_background).into(holder.logo)
         holder.companyName.text = item.name
         holder.stockPrice.text = "${item.stock_price.current_price.currency} ${item.stock_price.current_price.amount}"
+
+        holder.itemView.setOnClickListener {
+            onItemClick(item);
+        }
     }
 
     override fun getItemCount(): Int {

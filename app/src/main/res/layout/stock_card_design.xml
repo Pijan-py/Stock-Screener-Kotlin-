@@ -9,7 +9,6 @@
     android:background="@drawable/stock_card_border"
     android:gravity="center_vertical">
 
-    <!-- Logo Syarikat -->
     <ImageView
         android:id="@+id/logoCompany"
         android:layout_width="75dp"
@@ -18,7 +17,6 @@
         android:contentDescription="Company Logo"
         android:layout_marginEnd="12dp" />
 
-    <!-- Nama + Harga -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -41,19 +39,20 @@
             android:textColor="#4CAF50"
             android:textSize="16sp" />
 
-<!--        <LinearLayout-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_weight="1"-->
-<!--            android:orientation="horizontal">-->
-
-<!--            <CheckBox-->
-<!--                android:id="@+id/favorite"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_alingParentEnd="true"-->
-<!--                android:layout_marginEnd="16dp"-->
-<!--                android:text="Favorit" />-->
-<!--        </LinearLayout>-->
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/favIcon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/star_icon"
+        />
+
+<!--    <CheckBox-->
+<!--        android:id="@+id/favorite"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentEnd="true"-->
+<!--        android:layout_marginEnd="16dp"-->
+<!--        android:text="Favorit" />-->
 </LinearLayout>
