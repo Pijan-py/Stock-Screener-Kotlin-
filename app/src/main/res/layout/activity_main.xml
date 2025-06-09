@@ -20,6 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <SearchView
+        android:id="@+id/searchCompanyName"
         android:layout_width="321dp"
         android:layout_height="29dp"
         android:layout_marginStart="28dp"

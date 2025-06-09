@@ -1,9 +1,11 @@
 package com.example.stockscreener
 
+import android.app.DownloadManager.Query
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.SearchView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
@@ -21,6 +23,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var stockAdapter: StockAdapter
     private lateinit var stockList: List<Stock>
+    private lateinit var searchCompanyName: SearchView
+    private lateinit var sharedPreferences: android.content.SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,18 +36,37 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        sharedPreferences = getSharedPreferences("StockPrefs", Context.MODE_PRIVATE)
+
         // Initialize view
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
+        searchCompanyName = findViewById(R.id.searchCompanyName)
 
         // Load data dari JSON
         stockList = loadStockDataFromJson()
 
         // Set adapter
-        stockAdapter = StockAdapter(stockList) { stock ->
-            showPopup(stock)
-        }
+        stockAdapter = StockAdapter(
+            context = this,
+            stockList = this.stockList,
+            onItemClick = { stock ->
+                showPopup(stock)
+            }
+        )
+
         recyclerView.adapter = stockAdapter
+
+        searchCompanyName.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                stockAdapter.searchFunction(newText ?: "")
+                return true
+            }
+        })
     }
 
     private fun loadStockDataFromJson(): List<Stock> {
