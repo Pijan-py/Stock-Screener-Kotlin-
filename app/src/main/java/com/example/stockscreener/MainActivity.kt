@@ -1,16 +1,15 @@
 package com.example.stockscreener
 
-import android.app.DownloadManager.Query
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.SearchView
+import android.widget.Switch
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var stockList: List<Stock>
     private lateinit var searchCompanyName: SearchView
     private lateinit var sharedPreferences: android.content.SharedPreferences
+    private lateinit var switchFavorite: Switch
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +36,10 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        // Initialize toggle switch
+        switchFavorite = findViewById(R.id.switchFavorites)
+
+        // Initialize share preference
         sharedPreferences = getSharedPreferences("StockPrefs", Context.MODE_PRIVATE)
 
         // Initialize view
@@ -67,6 +71,15 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
         })
+
+        // function to filter favorite only
+        switchFavorite.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                stockAdapter.showFavorite(stockList.filter { it.isFavorite })
+            } else {
+                stockAdapter.showFavorite(stockList)
+            }
+        }
     }
 
     private fun loadStockDataFromJson(): List<Stock> {
@@ -100,6 +113,7 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
+    // function to change background color base on price change
     private fun backgroundColorChange(priceChange: Double): Int {
         if (priceChange > 0) {
             return Color.parseColor("#A5D6A7")

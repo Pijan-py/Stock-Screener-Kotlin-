@@ -99,4 +99,10 @@ class StockAdapter(private val context: Context,
         }
     }
 
+    fun showFavorite(favoriteList: List<Stock>) {
+        searchStockList.clear()
+        searchStockList.addAll(favoriteList)
+        notifyDataSetChanged()
+    }
+
 }
