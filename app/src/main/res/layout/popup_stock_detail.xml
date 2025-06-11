@@ -21,24 +21,28 @@
         android:text="Company Name"
         android:textAlignment="center"
         android:textSize="18sp"
+        android:textColor="@color/black"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/popupSymbol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="(AAPL)" />
+        android:text="(AAPL)"
+        android:textColor="@color/black"/>
 
     <TextView
         android:id="@+id/popupPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="$169.98"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:textColor="#4CAF50"/>
 
     <TextView
         android:id="@+id/popupChange"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="-1.5 (-0.87%)" />
+        android:text="-1.5 (-0.87%)"
+        android:textColor="@color/black"/>
 </LinearLayout>

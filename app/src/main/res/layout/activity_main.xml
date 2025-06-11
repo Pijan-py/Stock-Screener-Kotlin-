@@ -15,6 +15,9 @@
         android:layout_marginStart="28dp"
         android:background="@drawable/rounded_searchview"
         android:queryHint="Search"
+        android:tooltipText="@android:color/black"
+
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,6 +31,8 @@
         android:layout_marginTop="80dp"
         android:text="Stock List "
         android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -38,7 +43,9 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="28dp"
         android:text="Favorites"
-        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="@id/titleStockList"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.009"
@@ -58,5 +65,31 @@
         app:layout_constraintTop_toBottomOf="@id/titleStockList"
         app:layout_constraintVertical_bias="0.0"
         tools:listitem="@drawable/stock_card_border" />
+
+    <TextView
+        android:id="@+id/noDataText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Data Found"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/switchFavorites"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/noFavoriteText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Favorite Yet"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/switchFavorites"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

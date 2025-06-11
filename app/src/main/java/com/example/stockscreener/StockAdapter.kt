@@ -51,11 +51,11 @@ class StockAdapter(private val context: Context,
         }
     }
 
-    fun searchFunction(query:String) {
+    fun searchFunction(query: String): Boolean {
         val lowerCaseQuery = query.lowercase().trim()
         searchStockList.clear()
 
-        if (lowerCaseQuery.isEmpty()){
+        if (lowerCaseQuery.isEmpty()) {
             searchStockList.addAll(stockList)
         } else {
             for (stock in stockList) {
@@ -64,8 +64,11 @@ class StockAdapter(private val context: Context,
                 }
             }
         }
+
         notifyDataSetChanged()
+        return searchStockList.isNotEmpty()
     }
+
 
     override fun getItemCount(): Int {
         return searchStockList.size

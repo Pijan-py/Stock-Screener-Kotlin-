@@ -25,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var searchCompanyName: SearchView
     private lateinit var sharedPreferences: android.content.SharedPreferences
     private lateinit var switchFavorite: Switch
+    private lateinit var noFavoriteText: TextView
+    private lateinit var noDataText: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +40,12 @@ class MainActivity : AppCompatActivity() {
 
         // Initialize toggle switch
         switchFavorite = findViewById(R.id.switchFavorites)
+
+        // Initialize textview for no favorite
+        noFavoriteText = findViewById(R.id.noFavoriteText)
+
+        // Initialize text for no data found
+        noDataText = findViewById(R.id.noDataText)
 
         // Initialize share preference
         sharedPreferences = getSharedPreferences("StockPrefs", Context.MODE_PRIVATE)
@@ -67,19 +75,41 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                stockAdapter.searchFunction(newText ?: "")
+                val hasResult = stockAdapter.searchFunction(newText ?: "")
+
+                if (hasResult) {
+                    noDataText.visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
+                } else {
+                    noDataText.visibility = View.VISIBLE
+                    recyclerView.visibility = View.GONE
+                }
+
                 return true
             }
         })
 
+
         // function to filter favorite only
         switchFavorite.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                stockAdapter.showFavorite(stockList.filter { it.isFavorite })
+                val favoriteOnly = stockList.filter { it.isFavorite }
+                stockAdapter.showFavorite(favoriteOnly)
+
+                if (favoriteOnly.isEmpty()) {
+                    noFavoriteText.visibility = View.VISIBLE
+                    recyclerView.visibility = View.GONE
+                } else {
+                    noFavoriteText.visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
+                }
             } else {
                 stockAdapter.showFavorite(stockList)
+                noFavoriteText.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
             }
         }
+
     }
 
     private fun loadStockDataFromJson(): List<Stock> {
