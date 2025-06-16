@@ -64,6 +64,9 @@ class MainActivity : AppCompatActivity() {
             stockList = this.stockList,
             onItemClick = { stock ->
                 showPopup(stock)
+            },
+            onFavoriteChanged = {
+                filterAndDisplayList()
             }
         )
 
@@ -75,48 +78,62 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                val hasResult = stockAdapter.searchFunction(newText ?: "")
-
-                if (hasResult) {
-                    noDataText.visibility = View.GONE
-                    recyclerView.visibility = View.VISIBLE
-                } else {
-                    noDataText.visibility = View.VISIBLE
-                    recyclerView.visibility = View.GONE
-                }
-
+                filterAndDisplayList()
                 return true
             }
         })
 
-
-        // function to filter favorite only
-        switchFavorite.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                val favoriteOnly = stockList.filter { it.isFavorite }
-                stockAdapter.showFavorite(favoriteOnly)
-
-                if (favoriteOnly.isEmpty()) {
-                    noFavoriteText.visibility = View.VISIBLE
-                    recyclerView.visibility = View.GONE
-                } else {
-                    noFavoriteText.visibility = View.GONE
-                    recyclerView.visibility = View.VISIBLE
-                }
-            } else {
-                stockAdapter.showFavorite(stockList)
-                noFavoriteText.visibility = View.GONE
-                recyclerView.visibility = View.VISIBLE
-            }
+        // Listener for the favorite switch
+        switchFavorite.setOnCheckedChangeListener { _, _ ->
+            filterAndDisplayList()
         }
 
+        // Initial list display
+        filterAndDisplayList()
+    }
+
+    private fun filterAndDisplayList() {
+        val query = searchCompanyName.query.toString().lowercase().trim()
+        val isFavoritesOnly = switchFavorite.isChecked
+
+        val favoriteStocks = stockList.filter { it.isFavorite }
+        val baseList = if (isFavoritesOnly) favoriteStocks else stockList
+
+        val filteredList = if (query.isEmpty()) {
+            baseList
+        } else {
+            baseList.filter { it.name.lowercase().contains(query) }
+        }
+
+        stockAdapter.updateList(filteredList)
+
+        when {
+            isFavoritesOnly && favoriteStocks.isEmpty() -> {
+                recyclerView.visibility = View.GONE
+                noDataText.visibility = View.GONE
+                noFavoriteText.visibility = View.VISIBLE
+            }
+            filteredList.isEmpty() -> {
+                recyclerView.visibility = View.GONE
+                noFavoriteText.visibility = View.GONE
+                noDataText.visibility = View.VISIBLE
+            }
+            else -> {
+                recyclerView.visibility = View.VISIBLE
+                noDataText.visibility = View.GONE
+                noFavoriteText.visibility = View.GONE
+            }
+        }
     }
 
     private fun loadStockDataFromJson(): List<Stock> {
         val jsonStr = assets.open("stock.json").bufferedReader().use { it.readText() }
         val gson = Gson()
         val type = object : TypeToken<List<Stock>>() {}.type
-        return gson.fromJson(jsonStr, type)
+        val stocks: List<Stock> = gson.fromJson(jsonStr, type)
+        val prefs = getSharedPreferences("StockPrefs", Context.MODE_PRIVATE)
+        stocks.forEach { it.isFavorite = prefs.getBoolean("favorite_${it.id}", false) }
+        return stocks
     }
 
     private fun showPopup(stock: Stock) {
@@ -150,7 +167,6 @@ class MainActivity : AppCompatActivity() {
         } else if (priceChange < 0) {
             return Color.parseColor("#EF9A9A")
         } else {
-            // Tiada perubahan, kelabu
             return Color.parseColor("#F5F5F5")
         }
     }

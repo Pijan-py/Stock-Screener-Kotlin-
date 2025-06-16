@@ -12,7 +12,8 @@ import com.bumptech.glide.Glide
 
 class StockAdapter(private val context: Context,
                    private val stockList: List<Stock>,
-                   private val onItemClick: (Stock) -> Unit
+                   private val onItemClick: (Stock) -> Unit,
+                   private val onFavoriteChanged: () -> Unit
 ) : RecyclerView.Adapter<StockAdapter.ViewHolder>() {
 
     private var searchStockList: MutableList<Stock> = stockList.toMutableList()
@@ -20,7 +21,7 @@ class StockAdapter(private val context: Context,
         context.getSharedPreferences("StockPrefs", Context.MODE_PRIVATE)
 
     init {
-        loadFavorites()
+        searchStockList.addAll(stockList)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StockAdapter.ViewHolder {
@@ -51,25 +52,6 @@ class StockAdapter(private val context: Context,
         }
     }
 
-    fun searchFunction(query: String): Boolean {
-        val lowerCaseQuery = query.lowercase().trim()
-        searchStockList.clear()
-
-        if (lowerCaseQuery.isEmpty()) {
-            searchStockList.addAll(stockList)
-        } else {
-            for (stock in stockList) {
-                if (stock.name.lowercase().contains(lowerCaseQuery)) {
-                    searchStockList.add(stock)
-                }
-            }
-        }
-
-        notifyDataSetChanged()
-        return searchStockList.isNotEmpty()
-    }
-
-
     override fun getItemCount(): Int {
         return searchStockList.size
     }
@@ -82,11 +64,13 @@ class StockAdapter(private val context: Context,
     }
 
     private fun toggleFavoriteIcon(position: Int) {
-        val stock = searchStockList[position] // Use searchStockList
+        if (position < 0 || position >= searchStockList.size) return
+
+        val stock = searchStockList[position]
         stock.isFavorite = !stock.isFavorite
-        // Save favorite status to SharedPreferences
         saveFavoriteStatus(stock)
-        notifyItemChanged(position)
+
+        onFavoriteChanged()
     }
 
     private fun saveFavoriteStatus(stock: Stock) {
@@ -102,9 +86,9 @@ class StockAdapter(private val context: Context,
         }
     }
 
-    fun showFavorite(favoriteList: List<Stock>) {
+    fun updateList(newList: List<Stock>) {
         searchStockList.clear()
-        searchStockList.addAll(favoriteList)
+        searchStockList.addAll(newList)
         notifyDataSetChanged()
     }
 
